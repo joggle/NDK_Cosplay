@@ -1,0 +1,7 @@
+The NDK_Cosplay program is used to help administer the NDK costume contest. The administrator can add, remove and modify contestant entries as well as creating judges. It will also tabulate the winners of the contest. Judges can input their scores into the program.
+
+The program connects to a database over a network connection. Currently it assumes the database is using PostgreSQL.
+
+Some missing stuff:
+The SQL dump of a template database hasn't been added to the repository.
+The images used in the program aren't in the repository due to licsensing issues.
