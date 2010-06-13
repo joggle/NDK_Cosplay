@@ -1,0 +1,18 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+  <file>images/graveyard.png</file>
+  <file>images/graveyard2.png</file>
+  <file>images/graveyard3.png</file>
+  <file>images/mod_entry.png</file>
+  <file>images/new_entry.png</file>
+  <file>images/remove_entry.png</file>
+  <file>images/wait_list.png</file>
+  <file>images/new_judge1.png</file>
+  <file>images/new_judge2.png</file>
+  <file>images/new_judge3.png</file>
+  <file>images/entry_in_graveyard.png</file>
+  <file>images/wait_list_entry.png</file>
+  <file>images/GreenPastures.jpg</file>
+  <file>images/graveyard.jpg</file>
+</qresource>
+</RCC>
