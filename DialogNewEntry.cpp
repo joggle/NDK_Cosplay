@@ -18,10 +18,16 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     connect(autoFill,SIGNAL(clicked()),this,SLOT(autoFillFields()));
     clearData = new QPushButton("Clear fields");
     connect(clearData,SIGNAL(clicked()),this,SLOT(clearDataFields()));
+    QPushButton* updateDesc = new QPushButton("Update description");
+    connect(updateDesc,SIGNAL(clicked()),this,SLOT(updateDescription()));
+    updateDesc->setToolTip("Update description using current data for this entry");
     webButtonLayout->addWidget(autoFill);
     webButtonLayout->addWidget(clearData);
+    webButtonLayout->addWidget(updateDesc);
     mainLayout->addLayout(webButtonLayout);
     QFormLayout* mainFormLayout = new QFormLayout();
+    entryDescription = new QLineEdit();
+    mainFormLayout->addRow("Description:",entryDescription);
     groupName = new QLineEdit();
     mainFormLayout->addRow("Group name:",groupName);
     groupEMail = new QLineEdit();
@@ -226,7 +232,7 @@ DialogNewEntry::accept()
         db.rollback();
         return;
     }
-    sqlString = "INSERT INTO entry (\"order\", group_name, register_date, category_id, craft_judged, player_1_id";
+    sqlString = "INSERT INTO entry (\"order\", description, group_name, register_date, category_id, craft_judged, player_1_id";
     QString originStr = originComments->toPlainText();
     QString entryStr = entryComments->toPlainText();
     QString announcerStr = announcerNotes->toPlainText();
@@ -256,8 +262,9 @@ DialogNewEntry::accept()
     sqlString.append(") VALUES (");
     int catID=getCategoryID();
     QString craftJudged = (craftmanship->isChecked() ? "true" : "false");
-    sqlString.append(QString("%1, '%2', now(), %3, %4, %5")
+    sqlString.append(QString("%1, '%2', '%3', now(), %4, %5, %6")
                     .arg(order)
+                    .arg(DBUtility::quote(entryDescription->text()))
                     .arg(DBUtility::quote(groupName->text()))
                     .arg(catID)
                     .arg(craftJudged)
@@ -477,6 +484,41 @@ DialogNewEntry::autoFillFields()
     if (!somethingSet)
     {
         QMessageBox::warning(this,"Unable to parse data","Unable to parse any data from web form text!");
+    } else
+    {
+        // update the entry's description
+        updateDescription();
+    }
+}
+
+void
+DialogNewEntry::updateDescription()
+{
+    if (!player2Name->text().isEmpty())
+    {
+        // assume it's a skit ('group name' performing 'skit name')
+    } else
+    {
+        // otherwise, assume one person:
+        // 'real name' as 'character' from 'origin'
+        QString description;
+        QString realName=player1Name->text();
+        QString charName=player1Character->text();
+        QString origin=originComments->toPlainText();
+        if (!realName.isEmpty())
+        {
+            description = realName;
+            if (!charName.isEmpty())
+                description.append(QString(" as %1").arg(charName));
+            if (!origin.isEmpty())
+                description.append(QString(" from %1").arg(origin));
+        } else if (!charName.isEmpty())
+        {
+            description = charName;
+            if (!origin.isEmpty())
+                description.append(QString(" from %1").arg(origin));
+        }
+        entryDescription->setText(description);
     }
 }
 

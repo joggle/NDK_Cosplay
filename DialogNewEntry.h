@@ -22,6 +22,7 @@ public slots:
 private slots:
     void autoFillFields();
     void clearDataFields();
+    void updateDescription();
 private:
     void loadSettings();
     void saveSettings();
@@ -31,6 +32,7 @@ private:
     QTextEdit* webFormInfo;
     QPushButton* autoFill;
     QPushButton* clearData;
+    QLineEdit* entryDescription;
     QLineEdit* groupName;
     QLineEdit* groupEMail;
     QLineEdit* scriptUrl;
