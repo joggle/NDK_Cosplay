@@ -34,6 +34,7 @@ private:
     QPushButton* clearData;
     QLineEdit* entryDescription;
     QLineEdit* groupName;
+    QLineEdit* skitName;
     QLineEdit* groupEMail;
     QLineEdit* scriptUrl;
     QCheckBox* craftmanship;

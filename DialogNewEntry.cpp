@@ -30,6 +30,8 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     mainFormLayout->addRow("Description:",entryDescription);
     groupName = new QLineEdit();
     mainFormLayout->addRow("Group name:",groupName);
+    skitName = new QLineEdit();
+    mainFormLayout->addRow("Skit name:",skitName);
     groupEMail = new QLineEdit();
     mainFormLayout->addRow("Group e-mail:",groupEMail);
     QButtonGroup* categoryGroup = new QButtonGroup();
@@ -259,6 +261,8 @@ DialogNewEntry::accept()
         sqlString.append(", notes_sound");
     if (!scriptUrl->text().isEmpty())
         sqlString.append(", script_url");
+    if (!skitName->text().isEmpty())
+        sqlString.append(", skit_name");
     sqlString.append(") VALUES (");
     int catID=getCategoryID();
     QString craftJudged = (craftmanship->isChecked() ? "true" : "false");
@@ -291,6 +295,8 @@ DialogNewEntry::accept()
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(soundStr)));
     if (!scriptUrl->text().isEmpty())
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(scriptUrl->text())));
+    if (!skitName->text().isEmpty())
+        sqlString.append(QString(", '%1'").arg(DBUtility::quote(skitName->text())));
     sqlString.append(")");
     QSqlQuery addEntryQuery;
     if (!addEntryQuery.exec(sqlString))
