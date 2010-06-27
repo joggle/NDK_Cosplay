@@ -3,6 +3,7 @@
 
 #include "DialogNewEntry.h"
 #include "DBUtility.h"
+#include "DescriptionUtil.h"
 
 DialogNewEntry::DialogNewEntry(QWidget* parent)
               : QDialog(parent)
@@ -46,6 +47,7 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     catLayout->addWidget(catBeginner);
     catLayout->addWidget(catIntermediate);
     catLayout->addWidget(catMaster);
+    catLayout->addStretch();
     categoryGroup->addButton(catNotSet);
     categoryGroup->addButton(catSkit);
     categoryGroup->addButton(catBeginner);
@@ -55,53 +57,137 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     mainFormLayout->addRow("Category:",catLayout);
     craftmanship = new QCheckBox();
     mainFormLayout->addRow("Craftmanship?",craftmanship);
-    QHBoxLayout* player1Layout = new QHBoxLayout();
-    player1Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player1Layout = new QVBoxLayout();
+    QHBoxLayout* player1TopLayout = new QHBoxLayout();
+    QHBoxLayout* player1BottomLayout = new QHBoxLayout();
+    player1TopLayout->addWidget(new QLabel("Name:"));
     player1Name = new QLineEdit();
-    player1Layout->addWidget(player1Name);
-    player1Layout->addWidget(new QLabel("Character:"));
+    player1TopLayout->addWidget(player1Name);
+    player1TopLayout->addWidget(new QLabel("Character:"));
     player1Character = new QLineEdit();
-    player1Layout->addWidget(player1Character);
+    player1TopLayout->addWidget(player1Character);
+    player1TopLayout->addWidget(new QLabel("Origin:"));
+    player1Origin = new QLineEdit();
+    player1TopLayout->addWidget(player1Origin);
+    player1Layout->addLayout(player1TopLayout);
+    player1BottomLayout->addWidget(new QLabel("Description:"));
+    player1Description = new QLineEdit();
+    player1BottomLayout->addWidget(player1Description);
+    player1DescBtn = new QPushButton("Update description");
+    player1BottomLayout->addWidget(player1DescBtn);
+    connect(player1DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer1Desc()));
+    player1Layout->addLayout(player1BottomLayout);
     mainFormLayout->addRow("Contestant 1:",player1Layout);
-    QHBoxLayout* player2Layout = new QHBoxLayout();
-    player2Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player2Layout = new QVBoxLayout();
+    QHBoxLayout* player2TopLayout = new QHBoxLayout();
+    QHBoxLayout* player2BottomLayout = new QHBoxLayout();
+    player2TopLayout->addWidget(new QLabel("Name:"));
     player2Name = new QLineEdit();
-    player2Layout->addWidget(player2Name);
-    player2Layout->addWidget(new QLabel("Character:"));
+    player2TopLayout->addWidget(player2Name);
+    player2TopLayout->addWidget(new QLabel("Character:"));
     player2Character = new QLineEdit();
-    player2Layout->addWidget(player2Character);
+    player2TopLayout->addWidget(player2Character);
+    player2TopLayout->addWidget(new QLabel("Origin:"));
+    player2Origin = new QLineEdit();
+    player2TopLayout->addWidget(player2Origin);
+    player2Layout->addLayout(player2TopLayout);
+    player2BottomLayout->addWidget(new QLabel("Description:"));
+    player2Description = new QLineEdit();
+    player2BottomLayout->addWidget(player2Description);
+    player2DescBtn = new QPushButton("Update description");
+    player2BottomLayout->addWidget(player2DescBtn);
+    connect(player2DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer2Desc()));
+    player2Layout->addLayout(player2BottomLayout);
     mainFormLayout->addRow("Contestant 2:",player2Layout);
-    QHBoxLayout* player3Layout = new QHBoxLayout();
-    player3Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player3Layout = new QVBoxLayout();
+    QHBoxLayout* player3TopLayout = new QHBoxLayout();
+    QHBoxLayout* player3BottomLayout = new QHBoxLayout();
+    player3TopLayout->addWidget(new QLabel("Name:"));
     player3Name = new QLineEdit();
-    player3Layout->addWidget(player3Name);
-    player3Layout->addWidget(new QLabel("Character:"));
+    player3TopLayout->addWidget(player3Name);
+    player3TopLayout->addWidget(new QLabel("Character:"));
     player3Character = new QLineEdit();
-    player3Layout->addWidget(player3Character);
+    player3TopLayout->addWidget(player3Character);
+    player3TopLayout->addWidget(new QLabel("Origin:"));
+    player3Origin = new QLineEdit();
+    player3TopLayout->addWidget(player3Origin);
+    player3Layout->addLayout(player3TopLayout);
+    player3BottomLayout->addWidget(new QLabel("Description:"));
+    player3Description = new QLineEdit();
+    player3BottomLayout->addWidget(player3Description);
+    player3DescBtn = new QPushButton("Update description");
+    player3BottomLayout->addWidget(player3DescBtn);
+    connect(player3DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer3Desc()));
+    player3Layout->addLayout(player3BottomLayout);
     mainFormLayout->addRow("Contestant 3:",player3Layout);
-    QHBoxLayout* player4Layout = new QHBoxLayout();
-    player4Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player4Layout = new QVBoxLayout();
+    QHBoxLayout* player4TopLayout = new QHBoxLayout();
+    QHBoxLayout* player4BottomLayout = new QHBoxLayout();
+    player4TopLayout->addWidget(new QLabel("Name:"));
     player4Name = new QLineEdit();
-    player4Layout->addWidget(player4Name);
-    player4Layout->addWidget(new QLabel("Character:"));
+    player4TopLayout->addWidget(player4Name);
+    player4TopLayout->addWidget(new QLabel("Character:"));
     player4Character = new QLineEdit();
-    player4Layout->addWidget(player4Character);
+    player4TopLayout->addWidget(player4Character);
+    player4TopLayout->addWidget(new QLabel("Origin:"));
+    player4Origin = new QLineEdit();
+    player4TopLayout->addWidget(player4Origin);
+    player4Layout->addLayout(player4TopLayout);
+    player4BottomLayout->addWidget(new QLabel("Description:"));
+    player4Description = new QLineEdit();
+    player4BottomLayout->addWidget(player4Description);
+    player4DescBtn = new QPushButton("Update description");
+    player4BottomLayout->addWidget(player4DescBtn);
+    connect(player4DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer4Desc()));
+    player4Layout->addLayout(player4BottomLayout);
     mainFormLayout->addRow("Contestant 4:",player4Layout);
-    QHBoxLayout* player5Layout = new QHBoxLayout();
-    player5Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player5Layout = new QVBoxLayout();
+    QHBoxLayout* player5TopLayout = new QHBoxLayout();
+    QHBoxLayout* player5BottomLayout = new QHBoxLayout();
+    player5TopLayout->addWidget(new QLabel("Name:"));
     player5Name = new QLineEdit();
-    player5Layout->addWidget(player5Name);
-    player5Layout->addWidget(new QLabel("Character:"));
+    player5TopLayout->addWidget(player5Name);
+    player5TopLayout->addWidget(new QLabel("Character:"));
     player5Character = new QLineEdit();
-    player5Layout->addWidget(player5Character);
+    player5TopLayout->addWidget(player5Character);
+    player5TopLayout->addWidget(new QLabel("Origin:"));
+    player5Origin = new QLineEdit();
+    player5TopLayout->addWidget(player5Origin);
+    player5Layout->addLayout(player5TopLayout);
+    player5BottomLayout->addWidget(new QLabel("Description:"));
+    player5Description = new QLineEdit();
+    player5BottomLayout->addWidget(player5Description);
+    player5DescBtn = new QPushButton("Update description");
+    player5BottomLayout->addWidget(player5DescBtn);
+    connect(player5DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer5Desc()));
+    player5Layout->addLayout(player5BottomLayout);
     mainFormLayout->addRow("Contestant 5:",player5Layout);
-    QHBoxLayout* player6Layout = new QHBoxLayout();
-    player6Layout->addWidget(new QLabel("Name:"));
+
+    QVBoxLayout* player6Layout = new QVBoxLayout();
+    QHBoxLayout* player6TopLayout = new QHBoxLayout();
+    QHBoxLayout* player6BottomLayout = new QHBoxLayout();
+    player6TopLayout->addWidget(new QLabel("Name:"));
     player6Name = new QLineEdit();
-    player6Layout->addWidget(player6Name);
-    player6Layout->addWidget(new QLabel("Character:"));
+    player6TopLayout->addWidget(player6Name);
+    player6TopLayout->addWidget(new QLabel("Character:"));
     player6Character = new QLineEdit();
-    player6Layout->addWidget(player6Character);
+    player6TopLayout->addWidget(player6Character);
+    player6TopLayout->addWidget(new QLabel("Origin:"));
+    player6Origin = new QLineEdit();
+    player6TopLayout->addWidget(player6Origin);
+    player6Layout->addLayout(player6TopLayout);
+    player6BottomLayout->addWidget(new QLabel("Description:"));
+    player6Description = new QLineEdit();
+    player6BottomLayout->addWidget(player6Description);
+    player6DescBtn = new QPushButton("Update description");
+    player6BottomLayout->addWidget(player6DescBtn);
+    connect(player6DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer6Desc()));
+    player6Layout->addLayout(player6BottomLayout);
     mainFormLayout->addRow("Contestant 6:",player6Layout);
     scriptUrl = new QLineEdit();
     mainFormLayout->addRow("Script URL:",scriptUrl);
@@ -109,10 +195,6 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     mainLayout->addWidget(new QLabel("Entry comments:"));
     entryComments = new QTextEdit();
     mainLayout->addWidget(entryComments);
-    mainLayout->addWidget(new QLabel("Origin:"));
-    originComments = new QTextEdit();
-    originComments->setMaximumHeight(50);
-    mainLayout->addWidget(originComments);
     mainLayout->addWidget(new QLabel("Announcer notes:"));
     announcerNotes = new QTextEdit();
     announcerNotes->setMaximumHeight(50);
@@ -158,7 +240,7 @@ DialogNewEntry::accept()
     playerID1=playerID2=playerID3=playerID4=playerID5=playerID6=-1;
     if (!player1Name->text().isEmpty())
     {
-        if (!addPlayer(player1Name->text(),player1Character->text(),playerID1,errStr))
+        if (!addPlayer(player1Name->text(),player1Character->text(),player1Origin->text(),player1Description->text(),playerID1,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 1. Error: %1").arg(errStr));
             db.rollback();
@@ -172,7 +254,7 @@ DialogNewEntry::accept()
     }
     if (!player2Name->text().isEmpty())
     {
-        if (!addPlayer(player2Name->text(),player2Character->text(),playerID2,errStr))
+        if (!addPlayer(player2Name->text(),player2Character->text(),player2Origin->text(),player2Description->text(),playerID2,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 2. Error: %1").arg(errStr));
             db.rollback();
@@ -181,7 +263,7 @@ DialogNewEntry::accept()
     }
     if (!player3Name->text().isEmpty())
     {
-        if (!addPlayer(player3Name->text(),player3Character->text(),playerID3,errStr))
+        if (!addPlayer(player3Name->text(),player3Character->text(),player3Origin->text(),player3Description->text(),playerID3,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 3. Error: %1").arg(errStr));
             db.rollback();
@@ -190,7 +272,7 @@ DialogNewEntry::accept()
     }
     if (!player4Name->text().isEmpty())
     {
-        if (!addPlayer(player4Name->text(),player4Character->text(),playerID4,errStr))
+        if (!addPlayer(player4Name->text(),player4Character->text(),player4Origin->text(),player4Description->text(),playerID4,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 4. Error: %1").arg(errStr));
             db.rollback();
@@ -199,7 +281,7 @@ DialogNewEntry::accept()
     }
     if (!player5Name->text().isEmpty())
     {
-        if (!addPlayer(player5Name->text(),player5Character->text(),playerID5,errStr))
+        if (!addPlayer(player5Name->text(),player5Character->text(),player5Origin->text(),player5Description->text(),playerID5,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 5. Error: %1").arg(errStr));
             db.rollback();
@@ -208,7 +290,7 @@ DialogNewEntry::accept()
     }
     if (!player6Name->text().isEmpty())
     {
-        if (!addPlayer(player6Name->text(),player6Character->text(),playerID6,errStr))
+        if (!addPlayer(player6Name->text(),player6Character->text(),player6Origin->text(),player6Description->text(),playerID6,errStr))
         {
     		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 6. Error: %1").arg(errStr));
             db.rollback();
@@ -235,7 +317,6 @@ DialogNewEntry::accept()
         return;
     }
     sqlString = "INSERT INTO entry (\"order\", description, group_name, register_date, category_id, craft_judged, player_1_id";
-    QString originStr = originComments->toPlainText();
     QString entryStr = entryComments->toPlainText();
     QString announcerStr = announcerNotes->toPlainText();
     QString soundStr = soundNotes->toPlainText();
@@ -249,8 +330,6 @@ DialogNewEntry::accept()
         sqlString.append(", player_5_id");
     if (playerID6 != -1)
         sqlString.append(", player_6_id");
-    if (!originStr.isEmpty())
-        sqlString.append(", origin");
     if (!groupEMail->text().isEmpty())
         sqlString.append(", contact_email");
     if (!entryStr.isEmpty())
@@ -283,8 +362,6 @@ DialogNewEntry::accept()
         sqlString.append(QString(", %1").arg(playerID5));
     if (playerID6 != -1)
         sqlString.append(QString(", %1").arg(playerID6));
-    if (!originStr.isEmpty())
-        sqlString.append(QString(", '%1'").arg(DBUtility::quote(originStr)));
     if (!groupEMail->text().isEmpty())
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(groupEMail->text())));
     if (!entryStr.isEmpty())
@@ -314,6 +391,42 @@ DialogNewEntry::accept()
 
     saveSettings();
     QDialog::accept();
+}
+
+void
+DialogNewEntry::updatePlayer1Desc()
+{
+    updatePlayerDescription(1);
+}
+
+void
+DialogNewEntry::updatePlayer2Desc()
+{
+    updatePlayerDescription(2);
+}
+
+void
+DialogNewEntry::updatePlayer3Desc()
+{
+    updatePlayerDescription(3);
+}
+
+void
+DialogNewEntry::updatePlayer4Desc()
+{
+    updatePlayerDescription(4);
+}
+
+void
+DialogNewEntry::updatePlayer5Desc()
+{
+    updatePlayerDescription(5);
+}
+
+void
+DialogNewEntry::updatePlayer6Desc()
+{
+    updatePlayerDescription(6);
 }
 
 int
@@ -350,14 +463,16 @@ DialogNewEntry::getCategoryID()
 }
 
 bool
-DialogNewEntry::addPlayer(QString name, QString character, int& playerID, QString& errStr)
+DialogNewEntry::addPlayer(QString name, QString character, QString origin, QString desc, int& playerID, QString& errStr)
 {
     QString sqlString;
     sqlString = "INSERT INTO performer (real_name";
     if (!character.isEmpty())
-    {
         sqlString.append(", character_name");
-    }
+    if (!origin.isEmpty())
+        sqlString.append(", origin");
+    if (!desc.isEmpty())
+        sqlString.append(", description");
     sqlString.append(") VALUES ('");
     sqlString.append(DBUtility::quote(name));
     sqlString.append("'");
@@ -365,6 +480,18 @@ DialogNewEntry::addPlayer(QString name, QString character, int& playerID, QStrin
     {
         sqlString.append(", '");
         sqlString.append(DBUtility::quote(character));
+        sqlString.append("'");
+    }
+    if (!origin.isEmpty())
+    {
+        sqlString.append(", '");
+        sqlString.append(DBUtility::quote(origin));
+        sqlString.append("'");
+    }
+    if (!desc.isEmpty())
+    {
+        sqlString.append(", '");
+        sqlString.append(DBUtility::quote(desc));
         sqlString.append("'");
     }
     sqlString.append(") RETURNING id_player");
@@ -500,32 +627,68 @@ DialogNewEntry::autoFillFields()
 void
 DialogNewEntry::updateDescription()
 {
-    if (!player2Name->text().isEmpty())
+    if (catSkit->isChecked())
     {
-        // assume it's a skit ('group name' performing 'skit name')
+        entryDescription->setText(DescriptionUtil::getDescriptionSkit(groupName->text(),skitName->text()));
+    } else if (catNotSet->isChecked())
+    {
+        if (!skitName->text().isEmpty())
+            entryDescription->setText(DescriptionUtil::getDescriptionSkit(groupName->text(),skitName->text()));
+        else
+            entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
     } else
     {
-        // otherwise, assume one person:
-        // 'real name' as 'character' from 'origin'
-        QString description;
-        QString realName=player1Name->text();
-        QString charName=player1Character->text();
-        QString origin=originComments->toPlainText();
-        if (!realName.isEmpty())
-        {
-            description = realName;
-            if (!charName.isEmpty())
-                description.append(QString(" as %1").arg(charName));
-            if (!origin.isEmpty())
-                description.append(QString(" from %1").arg(origin));
-        } else if (!charName.isEmpty())
-        {
-            description = charName;
-            if (!origin.isEmpty())
-                description.append(QString(" from %1").arg(origin));
-        }
-        entryDescription->setText(description);
+        entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
     }
+    for (int ii=1; ii <= 6; ++ii)
+        updatePlayerDescription(ii);
+}
+
+void
+DialogNewEntry::updatePlayerDescription(int playerIndex)
+{
+    QString playerName, playerChar, playerOrigin;
+    QLineEdit* descText;
+    switch (playerIndex)
+    {
+    case 1:
+        playerName   = player1Name->text();
+        playerChar   = player1Character->text();
+        playerOrigin = player1Origin->text();
+        descText = player1Description;
+        break;
+    case 2:
+        playerName   = player2Name->text();
+        playerChar   = player2Character->text();
+        playerOrigin = player2Origin->text();
+        descText = player2Description;
+        break;
+    case 3:
+        playerName   = player3Name->text();
+        playerChar   = player3Character->text();
+        playerOrigin = player3Origin->text();
+        descText = player3Description;
+        break;
+    case 4:
+        playerName   = player4Name->text();
+        playerChar   = player4Character->text();
+        playerOrigin = player4Origin->text();
+        descText = player4Description;
+        break;
+    case 5:
+        playerName   = player5Name->text();
+        playerChar   = player5Character->text();
+        playerOrigin = player5Origin->text();
+        descText = player5Description;
+        break;
+    case 6:
+        playerName   = player6Name->text();
+        playerChar   = player6Character->text();
+        playerOrigin = player6Origin->text();
+        descText = player6Description;
+        break;
+    }
+    descText->setText(DescriptionUtil::getDescriptionSingle(playerName,playerChar,playerOrigin));
 }
 
 void

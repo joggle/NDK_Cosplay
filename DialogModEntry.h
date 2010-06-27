@@ -30,17 +30,33 @@ private slots:
     void handleTextChanged(const QString&);
     void handleBtnToggle(bool);
     void handleTextEditChanged();
+    void updateDescription();
+    void updatePlayer1Desc();
+    void updatePlayer2Desc();
+    void updatePlayer3Desc();
+    void updatePlayer4Desc();
+    void updatePlayer5Desc();
+    void updatePlayer6Desc();
 private:
+    void updatePlayerDescription(int playerIndex);
     void loadSettings();
     void saveSettings();
     void updateEntry();
-    bool getPlayerName(QString& realName, QString& charName, int player_id);
+    bool getPlayerName(QString& realName, QString& charName, QString& origin, QString& desc, QString& prereg, int player_id);
     bool deletePerformer(int player_id, int playerIndex);
-    bool addPlayer(QString name, QString character, int playerIndex, QString& errStr);
-    bool updatePlayer(QString name, QString character, int playerID, QString& errStr);
+    bool addPlayer(QString name, QString character, QString origin, QString desc, QString prereg, int playerIndex, QString& errStr);
+    bool updatePlayer(QString name, QString character, QString origin, QString desc, QString prereg, int playerID, QString& errStr);
     void addUpdateField(QString& updateStringFields, QString& updateStringValues, const QString& fieldName, const QString& fieldValue);
-    QSqlQueryModel* summaryModel;
-    QTableView* summaryView;
+    QSqlQueryModel* summaryModelUnassigned;
+    QSqlQueryModel* summaryModelBeginner;
+    QSqlQueryModel* summaryModelIntermediate;
+    QSqlQueryModel* summaryModelMaster;
+    QSqlQueryModel* summaryModelSkit;
+    QTableView* summaryViewUnassigned;
+    QTableView* summaryViewBeginner;
+    QTableView* summaryViewIntermediate;
+    QTableView* summaryViewMaster;
+    QTableView* summaryViewSkit;
 
     QCheckBox* statusConfirmed;
     QCheckBox* craftFormSent;
@@ -57,7 +73,6 @@ private:
     QRadioButton* catIntermediate;
     QRadioButton* catMaster;
     QTextEdit* entryComments;
-    QTextEdit* originComments;
     QTextEdit* announcerNotes;
     QTextEdit* soundNotes;
 
@@ -72,28 +87,46 @@ private:
     bool craftmanshipChanged;
     bool categoryChanged;
     bool entryCommentsChanged;
-    bool originCommentsChanged;
     bool announcerNotesChanged;
     bool soundNotesChanged;
 
     QLineEdit* player1Name;
     QLineEdit* player1Character;
+    QLineEdit* player1Origin;
+    QLineEdit* player1Description;
     QLineEdit* player1Prereg;
     QLineEdit* player2Name;
     QLineEdit* player2Character;
+    QLineEdit* player2Origin;
     QLineEdit* player2Prereg;
+    QLineEdit* player2Description;
     QLineEdit* player3Name;
     QLineEdit* player3Character;
+    QLineEdit* player3Origin;
+    QLineEdit* player3Description;
     QLineEdit* player3Prereg;
     QLineEdit* player4Name;
     QLineEdit* player4Character;
+    QLineEdit* player4Origin;
+    QLineEdit* player4Description;
     QLineEdit* player4Prereg;
     QLineEdit* player5Name;
     QLineEdit* player5Character;
+    QLineEdit* player5Origin;
+    QLineEdit* player5Description;
     QLineEdit* player5Prereg;
     QLineEdit* player6Name;
     QLineEdit* player6Character;
+    QLineEdit* player6Origin;
+    QLineEdit* player6Description;
     QLineEdit* player6Prereg;
+
+    QPushButton* player1DescBtn;
+    QPushButton* player2DescBtn;
+    QPushButton* player3DescBtn;
+    QPushButton* player4DescBtn;
+    QPushButton* player5DescBtn;
+    QPushButton* player6DescBtn;
 
     bool selected_;
     int player1id;
@@ -105,6 +138,16 @@ private:
     int idEntry;
     int currentRow;
     bool breakFast;
+
+    enum SelectedCategory
+    {
+        Unassigned,
+        Beginner,
+        Intermediate,
+        Master,
+        Skit
+    };
+    SelectedCategory selectedCategory;
 };
 
 #endif // NDK_COSTUME_CONTEST_DIALOGMODENTRY_H

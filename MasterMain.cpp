@@ -4,6 +4,7 @@
 #include "MasterStatus.h"
 #include "DialogNewEntry.h"
 #include "DialogModEntry.h"
+#include "DialogAddJudge.h"
 
 MasterMain::MasterMain(QWidget* parent)
           : QMainWindow(parent)
@@ -164,6 +165,9 @@ MasterMain::showGraveyard()
 void
 MasterMain::newJudge()
 {
+    DialogAddJudge* dlg = new DialogAddJudge(this);
+    dlg->exec();
+    delete dlg;
 }
 
 void
