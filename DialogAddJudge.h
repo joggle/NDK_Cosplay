@@ -14,6 +14,8 @@ public:
 public slots:
     void accept();
 private:
+    void loadSettings();
+    void saveSettings();
     bool addJudge();
     QLineEdit* judgeName_;
     QLineEdit* judgeUserName_;

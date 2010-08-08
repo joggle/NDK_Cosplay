@@ -13,6 +13,7 @@ class QTextEdit;
 class QTableView;
 class QSqlQueryModel;
 class QModelIndex;
+class QFormLayout;
 
 class DialogModEntry : public QDialog
 {
@@ -31,12 +32,13 @@ private slots:
     void handleBtnToggle(bool);
     void handleTextEditChanged();
     void updateDescription();
-    void updatePlayer1Desc();
+    void handlePlayerDescBtn();
+    /*void updatePlayer1Desc();
     void updatePlayer2Desc();
     void updatePlayer3Desc();
     void updatePlayer4Desc();
     void updatePlayer5Desc();
-    void updatePlayer6Desc();
+    void updatePlayer6Desc();*/
 private:
     void updatePlayerDescription(int playerIndex);
     void loadSettings();
@@ -47,16 +49,20 @@ private:
     bool addPlayer(QString name, QString character, QString origin, QString desc, QString prereg, int playerIndex, QString& errStr);
     bool updatePlayer(QString name, QString character, QString origin, QString desc, QString prereg, int playerID, QString& errStr);
     void addUpdateField(QString& updateStringFields, QString& updateStringValues, const QString& fieldName, const QString& fieldValue);
+    void addPlayerLayout(int playerID, QFormLayout* mainLayout);
+
     QSqlQueryModel* summaryModelUnassigned;
     QSqlQueryModel* summaryModelBeginner;
     QSqlQueryModel* summaryModelIntermediate;
     QSqlQueryModel* summaryModelMaster;
     QSqlQueryModel* summaryModelSkit;
+    QSqlQueryModel* summaryModelChildren;
     QTableView* summaryViewUnassigned;
     QTableView* summaryViewBeginner;
     QTableView* summaryViewIntermediate;
     QTableView* summaryViewMaster;
     QTableView* summaryViewSkit;
+    QTableView* summaryViewChildren;
 
     QCheckBox* statusConfirmed;
     QCheckBox* craftFormSent;
@@ -66,12 +72,14 @@ private:
     QLineEdit* skitName;
     QLineEdit* groupEMail;
     QLineEdit* scriptUrl;
+    QLineEdit* musicUrl;
     QCheckBox* craftmanship;
     QRadioButton* catNotSet;
     QRadioButton* catSkit;
     QRadioButton* catBeginner;
     QRadioButton* catIntermediate;
     QRadioButton* catMaster;
+    QRadioButton* catChildren;
     QTextEdit* entryComments;
     QTextEdit* announcerNotes;
     QTextEdit* soundNotes;
@@ -81,6 +89,7 @@ private:
     bool skitNameChanged;
     bool groupEMailChanged;
     bool scriptUrlChanged;
+    bool musicUrlChanged;
     bool confirmedChanged;
     bool formSentChanged;
     bool formReceivedChanged;
@@ -90,7 +99,15 @@ private:
     bool announcerNotesChanged;
     bool soundNotesChanged;
 
-    QLineEdit* player1Name;
+    QLineEdit** playerName;
+    QLineEdit** playerCharacter;
+    QLineEdit** playerOrigin;
+    QLineEdit** playerDescription;
+    QLineEdit** playerPrereg;
+    QPushButton** playerDescBtn;
+    int playerId[6];
+
+    /*QLineEdit* player1Name;
     QLineEdit* player1Character;
     QLineEdit* player1Origin;
     QLineEdit* player1Description;
@@ -126,15 +143,15 @@ private:
     QPushButton* player3DescBtn;
     QPushButton* player4DescBtn;
     QPushButton* player5DescBtn;
-    QPushButton* player6DescBtn;
+    QPushButton* player6DescBtn;*/
 
     bool selected_;
-    int player1id;
+    /*int player1id;
     int player2id;
     int player3id;
     int player4id;
     int player5id;
-    int player6id;
+    int player6id;*/
     int idEntry;
     int currentRow;
     bool breakFast;
@@ -145,7 +162,8 @@ private:
         Beginner,
         Intermediate,
         Master,
-        Skit
+        Skit,
+        Children
     };
     SelectedCategory selectedCategory;
 };

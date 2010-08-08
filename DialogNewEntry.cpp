@@ -41,156 +41,49 @@ DialogNewEntry::DialogNewEntry(QWidget* parent)
     catBeginner     = new QRadioButton("Beginner");
     catIntermediate = new QRadioButton("Intermediate");
     catMaster       = new QRadioButton("Master");
+    catChildren     = new QRadioButton("Children");
     QHBoxLayout* catLayout = new QHBoxLayout();
     catLayout->addWidget(catNotSet);
     catLayout->addWidget(catSkit);
     catLayout->addWidget(catBeginner);
     catLayout->addWidget(catIntermediate);
     catLayout->addWidget(catMaster);
+    catLayout->addWidget(catChildren);
     catLayout->addStretch();
     categoryGroup->addButton(catNotSet);
     categoryGroup->addButton(catSkit);
     categoryGroup->addButton(catBeginner);
     categoryGroup->addButton(catIntermediate);
     categoryGroup->addButton(catMaster);
+    categoryGroup->addButton(catChildren);
     catNotSet->setChecked(true);
     mainFormLayout->addRow("Category:",catLayout);
     craftmanship = new QCheckBox();
     mainFormLayout->addRow("Craftmanship?",craftmanship);
 
-    QVBoxLayout* player1Layout = new QVBoxLayout();
-    QHBoxLayout* player1TopLayout = new QHBoxLayout();
-    QHBoxLayout* player1BottomLayout = new QHBoxLayout();
-    player1TopLayout->addWidget(new QLabel("Name:"));
-    player1Name = new QLineEdit();
-    player1TopLayout->addWidget(player1Name);
-    player1TopLayout->addWidget(new QLabel("Character:"));
-    player1Character = new QLineEdit();
-    player1TopLayout->addWidget(player1Character);
-    player1TopLayout->addWidget(new QLabel("Origin:"));
-    player1Origin = new QLineEdit();
-    player1TopLayout->addWidget(player1Origin);
-    player1Layout->addLayout(player1TopLayout);
-    player1BottomLayout->addWidget(new QLabel("Description:"));
-    player1Description = new QLineEdit();
-    player1BottomLayout->addWidget(player1Description);
-    player1DescBtn = new QPushButton("Update description");
-    player1BottomLayout->addWidget(player1DescBtn);
-    connect(player1DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer1Desc()));
-    player1Layout->addLayout(player1BottomLayout);
-    mainFormLayout->addRow("Contestant 1:",player1Layout);
+    int ii;
+    playerName = new QLineEdit*[6];
+    playerCharacter = new QLineEdit*[6];
+    playerOrigin = new QLineEdit*[6];
+    playerDescription = new QLineEdit*[6];
+    playerDescBtn = new QPushButton*[6];
+    for (ii=0; ii < 6; ++ii)
+    {
+        playerName[ii] = new QLineEdit();
+        playerCharacter[ii] = new QLineEdit();
+        playerOrigin[ii] = new QLineEdit();
+        playerDescription[ii] = new QLineEdit();
+        playerDescBtn[ii] = new QPushButton("Update description");
+        playerDescBtn[ii]->setProperty("player_index",ii+1);
+        connect(playerDescBtn[ii],SIGNAL(clicked()),this,SLOT(handlePlayerDescBtn()));
+    }
 
-    QVBoxLayout* player2Layout = new QVBoxLayout();
-    QHBoxLayout* player2TopLayout = new QHBoxLayout();
-    QHBoxLayout* player2BottomLayout = new QHBoxLayout();
-    player2TopLayout->addWidget(new QLabel("Name:"));
-    player2Name = new QLineEdit();
-    player2TopLayout->addWidget(player2Name);
-    player2TopLayout->addWidget(new QLabel("Character:"));
-    player2Character = new QLineEdit();
-    player2TopLayout->addWidget(player2Character);
-    player2TopLayout->addWidget(new QLabel("Origin:"));
-    player2Origin = new QLineEdit();
-    player2TopLayout->addWidget(player2Origin);
-    player2Layout->addLayout(player2TopLayout);
-    player2BottomLayout->addWidget(new QLabel("Description:"));
-    player2Description = new QLineEdit();
-    player2BottomLayout->addWidget(player2Description);
-    player2DescBtn = new QPushButton("Update description");
-    player2BottomLayout->addWidget(player2DescBtn);
-    connect(player2DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer2Desc()));
-    player2Layout->addLayout(player2BottomLayout);
-    mainFormLayout->addRow("Contestant 2:",player2Layout);
-
-    QVBoxLayout* player3Layout = new QVBoxLayout();
-    QHBoxLayout* player3TopLayout = new QHBoxLayout();
-    QHBoxLayout* player3BottomLayout = new QHBoxLayout();
-    player3TopLayout->addWidget(new QLabel("Name:"));
-    player3Name = new QLineEdit();
-    player3TopLayout->addWidget(player3Name);
-    player3TopLayout->addWidget(new QLabel("Character:"));
-    player3Character = new QLineEdit();
-    player3TopLayout->addWidget(player3Character);
-    player3TopLayout->addWidget(new QLabel("Origin:"));
-    player3Origin = new QLineEdit();
-    player3TopLayout->addWidget(player3Origin);
-    player3Layout->addLayout(player3TopLayout);
-    player3BottomLayout->addWidget(new QLabel("Description:"));
-    player3Description = new QLineEdit();
-    player3BottomLayout->addWidget(player3Description);
-    player3DescBtn = new QPushButton("Update description");
-    player3BottomLayout->addWidget(player3DescBtn);
-    connect(player3DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer3Desc()));
-    player3Layout->addLayout(player3BottomLayout);
-    mainFormLayout->addRow("Contestant 3:",player3Layout);
-
-    QVBoxLayout* player4Layout = new QVBoxLayout();
-    QHBoxLayout* player4TopLayout = new QHBoxLayout();
-    QHBoxLayout* player4BottomLayout = new QHBoxLayout();
-    player4TopLayout->addWidget(new QLabel("Name:"));
-    player4Name = new QLineEdit();
-    player4TopLayout->addWidget(player4Name);
-    player4TopLayout->addWidget(new QLabel("Character:"));
-    player4Character = new QLineEdit();
-    player4TopLayout->addWidget(player4Character);
-    player4TopLayout->addWidget(new QLabel("Origin:"));
-    player4Origin = new QLineEdit();
-    player4TopLayout->addWidget(player4Origin);
-    player4Layout->addLayout(player4TopLayout);
-    player4BottomLayout->addWidget(new QLabel("Description:"));
-    player4Description = new QLineEdit();
-    player4BottomLayout->addWidget(player4Description);
-    player4DescBtn = new QPushButton("Update description");
-    player4BottomLayout->addWidget(player4DescBtn);
-    connect(player4DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer4Desc()));
-    player4Layout->addLayout(player4BottomLayout);
-    mainFormLayout->addRow("Contestant 4:",player4Layout);
-
-    QVBoxLayout* player5Layout = new QVBoxLayout();
-    QHBoxLayout* player5TopLayout = new QHBoxLayout();
-    QHBoxLayout* player5BottomLayout = new QHBoxLayout();
-    player5TopLayout->addWidget(new QLabel("Name:"));
-    player5Name = new QLineEdit();
-    player5TopLayout->addWidget(player5Name);
-    player5TopLayout->addWidget(new QLabel("Character:"));
-    player5Character = new QLineEdit();
-    player5TopLayout->addWidget(player5Character);
-    player5TopLayout->addWidget(new QLabel("Origin:"));
-    player5Origin = new QLineEdit();
-    player5TopLayout->addWidget(player5Origin);
-    player5Layout->addLayout(player5TopLayout);
-    player5BottomLayout->addWidget(new QLabel("Description:"));
-    player5Description = new QLineEdit();
-    player5BottomLayout->addWidget(player5Description);
-    player5DescBtn = new QPushButton("Update description");
-    player5BottomLayout->addWidget(player5DescBtn);
-    connect(player5DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer5Desc()));
-    player5Layout->addLayout(player5BottomLayout);
-    mainFormLayout->addRow("Contestant 5:",player5Layout);
-
-    QVBoxLayout* player6Layout = new QVBoxLayout();
-    QHBoxLayout* player6TopLayout = new QHBoxLayout();
-    QHBoxLayout* player6BottomLayout = new QHBoxLayout();
-    player6TopLayout->addWidget(new QLabel("Name:"));
-    player6Name = new QLineEdit();
-    player6TopLayout->addWidget(player6Name);
-    player6TopLayout->addWidget(new QLabel("Character:"));
-    player6Character = new QLineEdit();
-    player6TopLayout->addWidget(player6Character);
-    player6TopLayout->addWidget(new QLabel("Origin:"));
-    player6Origin = new QLineEdit();
-    player6TopLayout->addWidget(player6Origin);
-    player6Layout->addLayout(player6TopLayout);
-    player6BottomLayout->addWidget(new QLabel("Description:"));
-    player6Description = new QLineEdit();
-    player6BottomLayout->addWidget(player6Description);
-    player6DescBtn = new QPushButton("Update description");
-    player6BottomLayout->addWidget(player6DescBtn);
-    connect(player6DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer6Desc()));
-    player6Layout->addLayout(player6BottomLayout);
-    mainFormLayout->addRow("Contestant 6:",player6Layout);
+    for (ii=1; ii <= 6; ++ii)
+        addPlayerLayout(ii,mainFormLayout);
     scriptUrl = new QLineEdit();
     mainFormLayout->addRow("Script URL:",scriptUrl);
+    musicUrl = new QLineEdit();
+    mainFormLayout->addRow("Music URL:",musicUrl);
     mainLayout->addLayout(mainFormLayout);
     mainLayout->addWidget(new QLabel("Entry comments:"));
     entryComments = new QTextEdit();
@@ -224,6 +117,32 @@ DialogNewEntry::~DialogNewEntry()
 }
 
 void
+DialogNewEntry::handlePlayerDescBtn()
+{
+    updatePlayerDescription(sender()->property("player_index").toInt());
+}
+
+void
+DialogNewEntry::addPlayerLayout(int playerID, QFormLayout* mainLayout)
+{
+    QVBoxLayout* playerLayout = new QVBoxLayout();
+    QHBoxLayout* playerTopLayout = new QHBoxLayout();
+    QHBoxLayout* playerBottomLayout = new QHBoxLayout();
+    playerTopLayout->addWidget(new QLabel("Name:"));
+    playerTopLayout->addWidget(playerName[playerID-1]);
+    playerTopLayout->addWidget(new QLabel("Character:"));
+    playerTopLayout->addWidget(playerCharacter[playerID-1]);
+    playerTopLayout->addWidget(new QLabel("Origin:"));
+    playerTopLayout->addWidget(playerOrigin[playerID-1]);
+    playerLayout->addLayout(playerTopLayout);
+    playerBottomLayout->addWidget(new QLabel("Description:"));
+    playerBottomLayout->addWidget(playerDescription[playerID-1]);
+    playerBottomLayout->addWidget(playerDescBtn[playerID-1]);
+    playerLayout->addLayout(playerBottomLayout);
+    mainLayout->addRow(QString("Contestant %1:").arg(playerID),playerLayout);
+}
+
+void
 DialogNewEntry::accept()
 {
     // store data in database
@@ -236,63 +155,22 @@ DialogNewEntry::accept()
     }
     // insert each contestant
     QString errStr;
-    int playerID1, playerID2, playerID3, playerID4, playerID5, playerID6;
-    playerID1=playerID2=playerID3=playerID4=playerID5=playerID6=-1;
-    if (!player1Name->text().isEmpty())
+    int playerID[6];
+    int ii;
+    for (ii=0; ii < 6; ++ii)
     {
-        if (!addPlayer(player1Name->text(),player1Character->text(),player1Origin->text(),player1Description->text(),playerID1,errStr))
+        playerID[ii] = -1;
+        if (!playerName[ii]->text().isEmpty())
         {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 1. Error: %1").arg(errStr));
-            db.rollback();
-            return;
-        }
-    } else
-    {
-		QMessageBox::critical(this,"Contestant 1 not set!","Contestant 1 must be set. Can't have an entry with no performer!");
-        db.rollback();
-        return;
-    }
-    if (!player2Name->text().isEmpty())
-    {
-        if (!addPlayer(player2Name->text(),player2Character->text(),player2Origin->text(),player2Description->text(),playerID2,errStr))
+            if (!addPlayer(playerName[ii]->text(),playerCharacter[ii]->text(),playerOrigin[ii]->text(),playerDescription[ii]->text(),playerID[ii],errStr))
+            {
+    		    QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant %1. Error: %2").arg(ii+1).arg(errStr));
+                db.rollback();
+                return;
+            }
+        } else if (ii==0)
         {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 2. Error: %1").arg(errStr));
-            db.rollback();
-            return;
-        }
-    }
-    if (!player3Name->text().isEmpty())
-    {
-        if (!addPlayer(player3Name->text(),player3Character->text(),player3Origin->text(),player3Description->text(),playerID3,errStr))
-        {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 3. Error: %1").arg(errStr));
-            db.rollback();
-            return;
-        }
-    }
-    if (!player4Name->text().isEmpty())
-    {
-        if (!addPlayer(player4Name->text(),player4Character->text(),player4Origin->text(),player4Description->text(),playerID4,errStr))
-        {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 4. Error: %1").arg(errStr));
-            db.rollback();
-            return;
-        }
-    }
-    if (!player5Name->text().isEmpty())
-    {
-        if (!addPlayer(player5Name->text(),player5Character->text(),player5Origin->text(),player5Description->text(),playerID5,errStr))
-        {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 5. Error: %1").arg(errStr));
-            db.rollback();
-            return;
-        }
-    }
-    if (!player6Name->text().isEmpty())
-    {
-        if (!addPlayer(player6Name->text(),player6Character->text(),player6Origin->text(),player6Description->text(),playerID6,errStr))
-        {
-    		QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant 6. Error: %1").arg(errStr));
+		    QMessageBox::critical(this,"Contestant 1 not set!","Contestant 1 must be set. Can't have an entry with no performer!");
             db.rollback();
             return;
         }
@@ -300,7 +178,7 @@ DialogNewEntry::accept()
     // get next order number
     QSqlQuery orderQuery;
     int order=-1;
-    if (orderQuery.exec("SELECT MAX(\"order\") AS max_order FROM entry"))
+    if (orderQuery.exec("SELECT MAX(\"order\") AS max_order FROM active_entries"))
     {
         order=1;
         if (orderQuery.next())
@@ -316,20 +194,15 @@ DialogNewEntry::accept()
         db.rollback();
         return;
     }
-    sqlString = "INSERT INTO entry (\"order\", description, group_name, register_date, category_id, craft_judged, player_1_id";
+    sqlString = "INSERT INTO entry (description, group_name, register_date, category_id, craft_judged, player_1_id";
     QString entryStr = entryComments->toPlainText();
     QString announcerStr = announcerNotes->toPlainText();
     QString soundStr = soundNotes->toPlainText();
-    if (playerID2 != -1)
-        sqlString.append(", player_2_id");
-    if (playerID3 != -1)
-        sqlString.append(", player_3_id");
-    if (playerID4 != -1)
-        sqlString.append(", player_4_id");
-    if (playerID5 != -1)
-        sqlString.append(", player_5_id");
-    if (playerID6 != -1)
-        sqlString.append(", player_6_id");
+    for (ii=1; ii < 6; ++ii)
+    {
+        if (playerID[ii] != -1)
+            sqlString.append(QString(", player_%1_id").arg(ii+1));
+    }
     if (!groupEMail->text().isEmpty())
         sqlString.append(", contact_email");
     if (!entryStr.isEmpty())
@@ -342,26 +215,23 @@ DialogNewEntry::accept()
         sqlString.append(", script_url");
     if (!skitName->text().isEmpty())
         sqlString.append(", skit_name");
+    if (!musicUrl->text().isEmpty())
+        sqlString.append(", music_url");
     sqlString.append(") VALUES (");
     int catID=getCategoryID();
     QString craftJudged = (craftmanship->isChecked() ? "true" : "false");
-    sqlString.append(QString("%1, '%2', '%3', now(), %4, %5, %6")
-                    .arg(order)
+    sqlString.append(QString("'%1', '%2', now(), '%3', %4, %5")
+                    //.arg(order)
                     .arg(DBUtility::quote(entryDescription->text()))
                     .arg(DBUtility::quote(groupName->text()))
                     .arg(catID)
                     .arg(craftJudged)
-                    .arg(playerID1));
-    if (playerID2 != -1)
-        sqlString.append(QString(", %1").arg(playerID2));
-    if (playerID3 != -1)
-        sqlString.append(QString(", %1").arg(playerID3));
-    if (playerID4 != -1)
-        sqlString.append(QString(", %1").arg(playerID4));
-    if (playerID5 != -1)
-        sqlString.append(QString(", %1").arg(playerID5));
-    if (playerID6 != -1)
-        sqlString.append(QString(", %1").arg(playerID6));
+                    .arg(playerID[0]));
+    for (ii=1; ii < 6; ++ii)
+    {
+        if (playerID[ii] != -1)
+            sqlString.append(QString(", %1").arg(playerID[ii]));
+    }
     if (!groupEMail->text().isEmpty())
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(groupEMail->text())));
     if (!entryStr.isEmpty())
@@ -374,11 +244,36 @@ DialogNewEntry::accept()
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(scriptUrl->text())));
     if (!skitName->text().isEmpty())
         sqlString.append(QString(", '%1'").arg(DBUtility::quote(skitName->text())));
-    sqlString.append(")");
+    if (!musicUrl->text().isEmpty())
+        sqlString.append(QString(", '%1'").arg(DBUtility::quote(musicUrl->text())));
+    sqlString.append(") RETURNING id_entry");
+    qDebug("Trying to execute query: [[%s]]",qPrintable(sqlString));
     QSqlQuery addEntryQuery;
     if (!addEntryQuery.exec(sqlString))
     {
         QMessageBox::critical(this,"Unable to add entry",QString("Unable to add entry to database. Error: %1").arg(addEntryQuery.lastError().text()));
+        db.rollback();
+        return;
+    }
+    int entryID=0;
+    if (addEntryQuery.next())
+    {
+        int fieldNo = addEntryQuery.record().indexOf("id_entry");
+        entryID = addEntryQuery.value(fieldNo).toInt();
+    } else
+    {
+        QMessageBox::critical(this,"Unable to add entry","Unable to add entry to database because query adding entry didn't return its ID");
+        db.rollback();
+        return;
+    }
+    // add the entry to the list of active entries
+    QSqlQuery addActiveEntryQuery;
+    QString sqlActiveEntry(QString("INSERT INTO active_entries (entry_id, \"order\") VALUES (%1, %2)")
+        .arg(entryID)
+        .arg(order));
+    if (!addActiveEntryQuery.exec(sqlActiveEntry))
+    {
+        QMessageBox::critical(this,"Unable to add entry",QString("Unable to add active entry to database. Error: %1").arg(addActiveEntryQuery.lastError().text()));
         db.rollback();
         return;
     }
@@ -391,42 +286,6 @@ DialogNewEntry::accept()
 
     saveSettings();
     QDialog::accept();
-}
-
-void
-DialogNewEntry::updatePlayer1Desc()
-{
-    updatePlayerDescription(1);
-}
-
-void
-DialogNewEntry::updatePlayer2Desc()
-{
-    updatePlayerDescription(2);
-}
-
-void
-DialogNewEntry::updatePlayer3Desc()
-{
-    updatePlayerDescription(3);
-}
-
-void
-DialogNewEntry::updatePlayer4Desc()
-{
-    updatePlayerDescription(4);
-}
-
-void
-DialogNewEntry::updatePlayer5Desc()
-{
-    updatePlayerDescription(5);
-}
-
-void
-DialogNewEntry::updatePlayer6Desc()
-{
-    updatePlayerDescription(6);
 }
 
 int
@@ -445,6 +304,9 @@ DialogNewEntry::getCategoryID()
     } else if (catSkit->isChecked())
     {
         catName="skits";
+    } else if (catChildren->isChecked())
+    {
+        catName="children";
     } else
     {
         catName = "not set";
@@ -463,7 +325,8 @@ DialogNewEntry::getCategoryID()
 }
 
 bool
-DialogNewEntry::addPlayer(QString name, QString character, QString origin, QString desc, int& playerID, QString& errStr)
+DialogNewEntry::addPlayer(QString name, QString character, QString origin,
+                          QString desc, int& playerID, QString& errStr)
 {
     QString sqlString;
     sqlString = "INSERT INTO performer (real_name";
@@ -510,6 +373,7 @@ DialogNewEntry::addPlayer(QString name, QString character, QString origin, QStri
         errStr = query.lastError().text();
         return false;
     }
+    return false; // tmp!!
 }
 
 void
@@ -558,55 +422,75 @@ DialogNewEntry::autoFillFields()
         groupEMail->setText(rxGroupEMail.cap(1));
         somethingSet=true;
     }
-    QRegExp rxContestant1("Contestant #1's Name: ([^\\n]+)");
-    pos = rxContestant1.indexIn(formText);
+    QRegExp rxCraftmanship("Would you like craftsmanship judging\\?: Yes");//: Yes");
+    pos = rxCraftmanship.indexIn(formText);
+    if (pos > -1)
+        craftmanship->setChecked(true);
+    else
+        craftmanship->setChecked(false);
+    QRegExp rxCompLevel("Competition Level: ([^\\n]+)");
+    pos = rxCompLevel.indexIn(formText);
     if (pos > -1)
     {
-        player1Name->setText(rxContestant1.cap(1));
+        QString complevel = rxCompLevel.cap(1);
+        if (complevel == "Beginner")
+            catBeginner->setChecked(true);
+        else if (complevel == "Intermediate")
+            catIntermediate->setChecked(true);
+        else if (complevel == "Master")
+            catMaster->setChecked(true);
         somethingSet=true;
     }
-    QRegExp rxContestant2("Contestant #2's Name: ([^\\n]+)");
-    pos = rxContestant2.indexIn(formText);
+    // see if this is a skit
+    QRegExp rxSkitTitle("Skit Title: ([^\\n]+)");
+    pos = rxSkitTitle.indexIn(formText);
     if (pos > -1)
     {
-        player2Name->setText(rxContestant2.cap(1));
-        somethingSet=true;
-    }
-    QRegExp rxContestant3("Contestant #3's Name: ([^\\n]+)");
-    pos = rxContestant3.indexIn(formText);
-    if (pos > -1)
+        catSkit->setChecked(true);
+        skitName->setText(rxSkitTitle.cap(1));
+    } else
+        skitName->setText("");
+    int iPlayer;
+    for (iPlayer=1; iPlayer <= 6; ++iPlayer)
     {
-        player3Name->setText(rxContestant3.cap(1));
-        somethingSet=true;
-    }
-    QRegExp rxContestant4("Contestant #4's Name: ([^\\n]+)");
-    pos = rxContestant4.indexIn(formText);
-    if (pos > -1)
-    {
-        player4Name->setText(rxContestant4.cap(1));
-        somethingSet=true;
-    }
-    QRegExp rxContestant5("Contestant #5's Name: ([^\\n]+)");
-    pos = rxContestant5.indexIn(formText);
-    if (pos > -1)
-    {
-        player5Name->setText(rxContestant5.cap(1));
-        somethingSet=true;
-    }
-    QRegExp rxContestant6("Contestant #6's Name: ([^\\n]+)");
-    pos = rxContestant6.indexIn(formText);
-    if (pos > -1)
-    {
-        player6Name->setText(rxContestant6.cap(1));
-        somethingSet=true;
-    }
+        QRegExp rxContestant(QString("Contestant #%1's Name: ([^\\n]+)").arg(iPlayer));
+        pos = rxContestant.indexIn(formText);
+        if (pos > -1)
+        {
+            playerName[iPlayer-1]->setText(rxContestant.cap(1));
+            somethingSet=true;
+        }
+        QRegExp rxCharacter(QString("Contestant #%1's Character: ([^\\n]+)").arg(iPlayer));
+        pos = rxCharacter.indexIn(formText);
+        if (pos > -1)
+        {
+            playerCharacter[iPlayer-1]->setText(rxCharacter.cap(1));
+            somethingSet=true;
+        }
+        QRegExp rxSource(QString("Contestant #%1's Source: ([^\\n]+)").arg(iPlayer));
+        pos = rxSource.indexIn(formText);
+        if (pos > -1)
+        {
+            playerOrigin[iPlayer-1]->setText(rxSource.cap(1));
+            somethingSet=true;
+        }
+    } // for each player
     QRegExp rxScript("Script: ([^\\n]+)");
     pos = rxScript.indexIn(formText);
     if (pos > -1)
     {
         scriptUrl->setText(rxScript.cap(1));
         somethingSet=true;
-    }
+    } else
+        scriptUrl->setText("");
+    QRegExp rxMusic("Music: ([^\\n]+)");
+    pos = rxMusic.indexIn(formText);
+    if (pos > -1)
+    {
+        musicUrl->setText(rxMusic.cap(1));
+        somethingSet=true;
+    } else
+        musicUrl->setText("");
     QRegExp rxComments("Comments:(\\s*)(.+)");
     pos = rxComments.indexIn(formText);
     if (pos > -1)
@@ -635,10 +519,10 @@ DialogNewEntry::updateDescription()
         if (!skitName->text().isEmpty())
             entryDescription->setText(DescriptionUtil::getDescriptionSkit(groupName->text(),skitName->text()));
         else
-            entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
+            entryDescription->setText(DescriptionUtil::getDescriptionSingle(playerName[0]->text(),playerCharacter[0]->text(),playerOrigin[0]->text()));
     } else
     {
-        entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
+        entryDescription->setText(DescriptionUtil::getDescriptionSingle(playerName[0]->text(),playerCharacter[0]->text(),playerOrigin[0]->text()));
     }
     for (int ii=1; ii <= 6; ++ii)
         updatePlayerDescription(ii);
@@ -647,51 +531,28 @@ DialogNewEntry::updateDescription()
 void
 DialogNewEntry::updatePlayerDescription(int playerIndex)
 {
-    QString playerName, playerChar, playerOrigin;
-    QLineEdit* descText;
-    switch (playerIndex)
-    {
-    case 1:
-        playerName   = player1Name->text();
-        playerChar   = player1Character->text();
-        playerOrigin = player1Origin->text();
-        descText = player1Description;
-        break;
-    case 2:
-        playerName   = player2Name->text();
-        playerChar   = player2Character->text();
-        playerOrigin = player2Origin->text();
-        descText = player2Description;
-        break;
-    case 3:
-        playerName   = player3Name->text();
-        playerChar   = player3Character->text();
-        playerOrigin = player3Origin->text();
-        descText = player3Description;
-        break;
-    case 4:
-        playerName   = player4Name->text();
-        playerChar   = player4Character->text();
-        playerOrigin = player4Origin->text();
-        descText = player4Description;
-        break;
-    case 5:
-        playerName   = player5Name->text();
-        playerChar   = player5Character->text();
-        playerOrigin = player5Origin->text();
-        descText = player5Description;
-        break;
-    case 6:
-        playerName   = player6Name->text();
-        playerChar   = player6Character->text();
-        playerOrigin = player6Origin->text();
-        descText = player6Description;
-        break;
-    }
-    descText->setText(DescriptionUtil::getDescriptionSingle(playerName,playerChar,playerOrigin));
+    playerDescription[playerIndex-1]->setText(DescriptionUtil::getDescriptionSingle(playerName[playerIndex-1]->text(),playerCharacter[playerIndex-1]->text(),playerOrigin[playerIndex-1]->text()));
 }
 
 void
 DialogNewEntry::clearDataFields()
 {
+    webFormInfo->setText("");
+    entryDescription->setText("");
+    groupName->setText("");
+    skitName->setText("");
+    groupEMail->setText("");
+    scriptUrl->setText("");
+    craftmanship->setChecked(false);
+    catNotSet->setChecked(true);
+    entryComments->setText("");
+    announcerNotes->setText("");
+    soundNotes->setText("");
+    for (int ii=0; ii < 6; ++ii)
+    {
+        playerName[ii]->setText("");
+        playerCharacter[ii]->setText("");
+        playerOrigin[ii]->setText("");
+        playerDescription[ii]->setText("");
+    }
 }

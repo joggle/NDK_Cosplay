@@ -12,6 +12,7 @@ DialogModEntry::DialogModEntry(QWidget* parent)
                 skitNameChanged(false),
                 groupEMailChanged(false),
                 scriptUrlChanged(false),
+                musicUrlChanged(false),
                 confirmedChanged(false),
                 formSentChanged(false),
                 formReceivedChanged(false),
@@ -21,17 +22,20 @@ DialogModEntry::DialogModEntry(QWidget* parent)
                 announcerNotesChanged(false),
                 soundNotesChanged(false),
                 selected_(false),
-                player1id(-1),
+                /*player1id(-1),
                 player2id(-1),
                 player3id(-1),
                 player4id(-1),
                 player5id(-1),
-                player6id(-1),
+                player6id(-1),*/
                 idEntry(-1),
                 currentRow(-1),
                 breakFast(false),
                 selectedCategory(Unassigned)
 {
+    int ii;
+    for (ii=0; ii < 6; ++ii)
+        playerId[ii] = -1;
     setWindowIcon(QIcon(":/images/mod_entry.png"));
     setWindowTitle("Modify entry");
 
@@ -54,6 +58,24 @@ DialogModEntry::DialogModEntry(QWidget* parent)
     summaryViewUnassigned->setMaximumWidth(400);
     summaryLayout->addWidget(new QLabel("Unassigned"));
     summaryLayout->addWidget(summaryViewUnassigned);
+
+    // Children entries
+    summaryModelChildren = new QSqlQueryModel();
+    summaryModelChildren->setQuery("SELECT * FROM mod_entry_summary WHERE category_id = 6");
+    //summaryModelBeginner->setHeaderData(0, Qt::Horizontal, tr("Order"));
+    summaryModelChildren->setHeaderData(1, Qt::Horizontal, tr("Group"));
+    summaryModelChildren->setHeaderData(2, Qt::Horizontal, tr("Real name 1"));
+
+    summaryViewChildren = new QTableView();
+    connect(summaryViewChildren,SIGNAL(clicked(const QModelIndex&)),this,SLOT(entrySelected(const QModelIndex&)));
+    summaryViewChildren->setModel(summaryModelChildren);
+    summaryViewChildren->setColumnHidden(0,true);
+    summaryViewChildren->setColumnHidden(3,true);
+    summaryViewChildren->setColumnHidden(4,true);
+    summaryViewChildren->show();
+    summaryViewChildren->setMaximumWidth(400);
+    summaryLayout->addWidget(new QLabel("Children"));
+    summaryLayout->addWidget(summaryViewChildren);
 
     // Beginner entries
     summaryModelBeginner = new QSqlQueryModel();
@@ -163,24 +185,49 @@ DialogModEntry::DialogModEntry(QWidget* parent)
     catBeginner     = new QRadioButton("Beginner");
     catIntermediate = new QRadioButton("Intermediate");
     catMaster       = new QRadioButton("Master");
+    catChildren     = new QRadioButton("Children");
     QHBoxLayout* catLayout = new QHBoxLayout();
     catLayout->addWidget(catNotSet);
     catLayout->addWidget(catSkit);
     catLayout->addWidget(catBeginner);
     catLayout->addWidget(catIntermediate);
     catLayout->addWidget(catMaster);
+    catLayout->addWidget(catChildren);
     catLayout->addStretch();
     categoryGroup->addButton(catNotSet);
     categoryGroup->addButton(catSkit);
     categoryGroup->addButton(catBeginner);
     categoryGroup->addButton(catIntermediate);
     categoryGroup->addButton(catMaster);
+    categoryGroup->addButton(catChildren);
     catNotSet->setChecked(true);
     mainFormLayout->addRow("Category:",catLayout);
     craftmanship = new QCheckBox();
     mainFormLayout->addRow("Craftmanship?",craftmanship);
 
-    QVBoxLayout* player1Layout = new QVBoxLayout();
+    playerName = new QLineEdit*[6];
+    playerCharacter = new QLineEdit*[6];
+    playerOrigin = new QLineEdit*[6];
+    playerDescription = new QLineEdit*[6];
+    playerPrereg = new QLineEdit*[6];
+    playerDescBtn = new QPushButton*[6];
+    for (ii=0; ii < 6; ++ii)
+    {
+        playerName[ii] = new QLineEdit();
+        playerCharacter[ii] = new QLineEdit();
+        playerOrigin[ii] = new QLineEdit();
+        playerDescription[ii] = new QLineEdit();
+        playerPrereg[ii] = new QLineEdit();
+        playerPrereg[ii]->setMaximumWidth(75);
+        playerDescBtn[ii] = new QPushButton("Update description");
+        playerDescBtn[ii]->setProperty("player_index",ii+1);
+        connect(playerDescBtn[ii],SIGNAL(clicked()),this,SLOT(handlePlayerDescBtn()));
+    }
+
+    for (ii=1; ii <= 6; ++ii)
+        addPlayerLayout(ii,mainFormLayout);
+
+    /*QVBoxLayout* player1Layout = new QVBoxLayout();
     QHBoxLayout* player1TopLayout = new QHBoxLayout();
     QHBoxLayout* player1BottomLayout = new QHBoxLayout();
     player1TopLayout->addWidget(new QLabel("Name:"));
@@ -334,10 +381,12 @@ DialogModEntry::DialogModEntry(QWidget* parent)
     player6BottomLayout->addWidget(player6DescBtn);
     connect(player6DescBtn,SIGNAL(clicked()),this,SLOT(updatePlayer6Desc()));
     player6Layout->addLayout(player6BottomLayout);
-    mainFormLayout->addRow("Contestant 6:",player6Layout);
+    mainFormLayout->addRow("Contestant 6:",player6Layout);*/
 
     scriptUrl = new QLineEdit();
     mainFormLayout->addRow("Script URL:",scriptUrl);
+    musicUrl = new QLineEdit();
+    mainFormLayout->addRow("Music URL:",musicUrl);
     mainLayout->addLayout(mainFormLayout);
     mainLayout->addWidget(new QLabel("Entry comments:"));
     entryComments = new QTextEdit();
@@ -372,6 +421,7 @@ DialogModEntry::DialogModEntry(QWidget* parent)
     connect(skitName,SIGNAL(textEdited(const QString&)),this,SLOT(handleTextChanged(const QString&)));
     connect(groupEMail,SIGNAL(textEdited(const QString&)),this,SLOT(handleTextChanged(const QString&)));
     connect(scriptUrl,SIGNAL(textEdited(const QString&)),this,SLOT(handleTextChanged(const QString&)));
+    connect(musicUrl,SIGNAL(textEdited(const QString&)),this,SLOT(handleTextChanged(const QString&)));
 
     connect(statusConfirmed,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
     connect(craftFormSent,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
@@ -382,6 +432,7 @@ DialogModEntry::DialogModEntry(QWidget* parent)
     connect(catBeginner,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
     connect(catIntermediate,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
     connect(catMaster,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
+    connect(catChildren,SIGNAL(toggled(bool)),this,SLOT(handleBtnToggle(bool)));
 
     connect(entryComments,SIGNAL(textChanged()),this,SLOT(handleTextEditChanged()));
     connect(announcerNotes,SIGNAL(textChanged()),this,SLOT(handleTextEditChanged()));
@@ -394,6 +445,34 @@ DialogModEntry::~DialogModEntry()
 }
 
 void
+DialogModEntry::handlePlayerDescBtn()
+{
+    updatePlayerDescription(sender()->property("player_index").toInt());
+}
+
+void
+DialogModEntry::addPlayerLayout(int playerID, QFormLayout* mainLayout)
+{
+    QVBoxLayout* playerLayout = new QVBoxLayout();
+    QHBoxLayout* playerTopLayout = new QHBoxLayout();
+    QHBoxLayout* playerBottomLayout = new QHBoxLayout();
+    playerTopLayout->addWidget(new QLabel("Name:"));
+    playerTopLayout->addWidget(playerName[playerID-1]);
+    playerTopLayout->addWidget(new QLabel("Character:"));
+    playerTopLayout->addWidget(playerCharacter[playerID-1]);
+    playerTopLayout->addWidget(new QLabel("Origin:"));
+    playerTopLayout->addWidget(playerOrigin[playerID-1]);
+    playerTopLayout->addWidget(new QLabel("Prereg:"));
+    playerTopLayout->addWidget(playerPrereg[playerID-1]);
+    playerLayout->addLayout(playerTopLayout);
+    playerBottomLayout->addWidget(new QLabel("Description:"));
+    playerBottomLayout->addWidget(playerDescription[playerID-1]);
+    playerBottomLayout->addWidget(playerDescBtn[playerID-1]);
+    playerLayout->addLayout(playerBottomLayout);
+    mainLayout->addRow(QString("Contestant %1:").arg(playerID),playerLayout);
+}
+
+/*void
 DialogModEntry::updatePlayer1Desc()
 {
     updatePlayerDescription(1);
@@ -427,12 +506,13 @@ void
 DialogModEntry::updatePlayer6Desc()
 {
     updatePlayerDescription(6);
-}
+}*/
 
 void
 DialogModEntry::updatePlayerDescription(int playerIndex)
 {
-    QString playerName, playerChar, playerOrigin;
+    playerDescription[playerIndex-1]->setText(DescriptionUtil::getDescriptionSingle(playerName[playerIndex-1]->text(),playerCharacter[playerIndex-1]->text(),playerOrigin[playerIndex-1]->text()));
+    /*QString playerName, playerChar, playerOrigin;
     QLineEdit* descText;
     switch (playerIndex)
     {
@@ -473,7 +553,7 @@ DialogModEntry::updatePlayerDescription(int playerIndex)
         descText = player6Description;
         break;
     }
-    descText->setText(DescriptionUtil::getDescriptionSingle(playerName,playerChar,playerOrigin));
+    descText->setText(DescriptionUtil::getDescriptionSingle(playerName,playerChar,playerOrigin));*/
 }
 
 void
@@ -493,10 +573,12 @@ DialogModEntry::updateDescription()
         if (!skitName->text().isEmpty())
             entryDescription->setText(DescriptionUtil::getDescriptionSkit(groupName->text(),skitName->text()));
         else
-            entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
+            entryDescription->setText(DescriptionUtil::getDescriptionSingle(playerName[0]->text(),playerCharacter[0]->text(),playerOrigin[0]->text()));
+            //entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
     } else
     {
-        entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
+        entryDescription->setText(DescriptionUtil::getDescriptionSingle(playerName[0]->text(),playerCharacter[0]->text(),playerOrigin[0]->text()));
+        //entryDescription->setText(DescriptionUtil::getDescriptionSingle(player1Name->text(),player1Character->text(),player1Origin->text()));
     }
     descriptionChanged=true;
     for (int ii=1; ii <= 6; ++ii)
@@ -534,6 +616,7 @@ DialogModEntry::loadSettings()
         summaryViewIntermediate->horizontalHeader()->resizeSection(0,sectSize);
         summaryViewMaster->horizontalHeader()->resizeSection(0,sectSize);
         summaryViewSkit->horizontalHeader()->resizeSection(0,sectSize);
+        summaryViewChildren->horizontalHeader()->resizeSection(0,sectSize);
     }
     sectSize = settings.value("w_1",-1).toInt();
     if (sectSize != -1)
@@ -543,6 +626,7 @@ DialogModEntry::loadSettings()
         summaryViewIntermediate->horizontalHeader()->resizeSection(1,sectSize);
         summaryViewMaster->horizontalHeader()->resizeSection(1,sectSize);
         summaryViewSkit->horizontalHeader()->resizeSection(1,sectSize);
+        summaryViewChildren->horizontalHeader()->resizeSection(1,sectSize);
     }
     sectSize = settings.value("w_2",-1).toInt();
     if (sectSize != -1)
@@ -552,6 +636,7 @@ DialogModEntry::loadSettings()
         summaryViewIntermediate->horizontalHeader()->resizeSection(2,sectSize);
         summaryViewMaster->horizontalHeader()->resizeSection(2,sectSize);
         summaryViewSkit->horizontalHeader()->resizeSection(2,sectSize);
+        summaryViewChildren->horizontalHeader()->resizeSection(2,sectSize);
     }
 }
 
@@ -576,6 +661,7 @@ DialogModEntry::refresh()
     summaryModelIntermediate->setQuery("SELECT * FROM mod_entry_summary WHERE category_id = 3");
     summaryModelMaster->setQuery("SELECT * FROM mod_entry_summary WHERE category_id = 4");
     summaryModelSkit->setQuery("SELECT * FROM mod_entry_summary WHERE category_id = 1");
+    summaryModelChildren->setQuery("SELECT * FROM mod_entry_summary WHERE category_id = 6");
     if (currentRow != -1)
     {
         breakFast=true;
@@ -595,6 +681,9 @@ DialogModEntry::refresh()
             break;
         case Skit:
             summaryViewSkit->selectRow(currentRow);
+            break;
+        case Children:
+            summaryViewChildren->selectRow(currentRow);
             break;
         }
     }
@@ -624,6 +713,10 @@ DialogModEntry::entrySelected(const QModelIndex & index)
     {
         summaryModel = summaryModelSkit;
         selectedCategory = Skit;
+    } else if (sender() == summaryViewChildren)
+    {
+        summaryModel = summaryModelChildren;
+        selectedCategory = Children;
     }
     currentRow = index.row();
     qDebug("currentRow=%d",currentRow);
@@ -643,6 +736,7 @@ DialogModEntry::entrySelected(const QModelIndex & index)
     skitNameChanged = false;
     groupEMailChanged = false;
     scriptUrlChanged = false;
+    musicUrlChanged = false;
     confirmedChanged = false;
     formSentChanged = false;
     formReceivedChanged = false;
@@ -654,7 +748,7 @@ DialogModEntry::entrySelected(const QModelIndex & index)
 
     // now load settings from selected entry
     QSqlRecord entry = summaryModel->record(currentRow);
-    int order = entry.value("order").toInt();
+    //--int order = entry.value("order").toInt();
     idEntry = entry.value("id_entry").toInt();
     QString gname = entry.value("group_name").toString();
     QString sqlString;
@@ -674,6 +768,7 @@ DialogModEntry::entrySelected(const QModelIndex & index)
         QString desc = getEntryQuery.record().value("description").toString();
         QString grpName = getEntryQuery.record().value("group_name").toString();
         QString script = getEntryQuery.record().value("script_url").toString();
+        QString music = getEntryQuery.record().value("music_url").toString();
         QString sktName = getEntryQuery.record().value("skit_name").toString();
         bool craftJudged = getEntryQuery.record().value("craft_judged").toBool();
         bool isConfirmed = getEntryQuery.record().value("confirmed").toBool();
@@ -692,6 +787,7 @@ DialogModEntry::entrySelected(const QModelIndex & index)
         skitName->setText(sktName);
 	    groupName->setText(grpName);
 	    scriptUrl->setText(script);
+	    musicUrl->setText(music);
 	    craftmanship->setChecked(craftJudged);
         entryCommentsChanged = false;
         announcerNotesChanged = false;
@@ -704,20 +800,38 @@ DialogModEntry::entrySelected(const QModelIndex & index)
             catIntermediate->setChecked(true);
         else if (catID == 4)
             catMaster->setChecked(true);
+        else if (catID == 6)
+            catChildren->setChecked(true);
         else
             catNotSet->setChecked(true);
         // set the contestant info
-        int player_id = getEntryQuery.record().value("player_1_id").toInt();
-        player1id = player_id;
-        QString realName, charName, origin, playerDesc, prereg;
-        if (!getPlayerName(realName, charName, origin, playerDesc, prereg, player_id))
-            return;
-        player1Name->setText(realName);
-        player1Character->setText(charName);
-        player1Origin->setText(origin);
-        player1Description->setText(playerDesc);
-        player1Prereg->setText(prereg);
-        if (!getEntryQuery.record().isNull("player_2_id"))
+        int ii;
+        for (ii=0; ii < 6; ++ii)
+        {
+            QString fieldName(QString("player_%1_id").arg(ii+1));
+            if (!getEntryQuery.record().isNull(fieldName))
+            {
+                int player_id = getEntryQuery.record().value(fieldName).toInt();
+                playerId[ii] = player_id;
+                QString realName, charName, origin, playerDesc, prereg;
+                if (!getPlayerName(realName, charName, origin, playerDesc, prereg, player_id))
+                    return;
+                playerName[ii]->setText(realName);
+                playerCharacter[ii]->setText(charName);
+                playerOrigin[ii]->setText(origin);
+                playerDescription[ii]->setText(playerDesc);
+                playerPrereg[ii]->setText(prereg);
+            } else
+            {
+                playerName[ii]->setText("");
+                playerCharacter[ii]->setText("");
+                playerOrigin[ii]->setText("");
+                playerDescription[ii]->setText("");
+                playerPrereg[ii]->setText("");
+                playerId[ii] = -1;
+            }
+        }
+        /*if (!getEntryQuery.record().isNull("player_2_id"))
         {
             player2id = player_id = getEntryQuery.record().value("player_2_id").toInt();
             if (!getPlayerName(realName, charName, origin, playerDesc, prereg, player_id))
@@ -811,7 +925,7 @@ DialogModEntry::entrySelected(const QModelIndex & index)
             player6Description->setText("");
             player6Prereg->setText("");
             player6id = -1;
-        }
+        }*/
     }
     //qDebug("Selected group '%s' at order %d, contact_email=%s",qPrintable(gname),order,qPrintable(contactEmail));
 }
@@ -827,7 +941,44 @@ DialogModEntry::updateEntry()
     }
     QString errStr;
     // update player 1
-    if (!updatePlayer(player1Name->text(),player1Character->text(),player1Origin->text(),player1Description->text(),player1Prereg->text(),player1id,errStr))
+    if (!updatePlayer(playerName[0]->text(),playerCharacter[0]->text(),playerOrigin[0]->text(),playerDescription[0]->text(),playerPrereg[0]->text(),playerId[0],errStr))
+    {
+        QMessageBox::critical(this,"Unable to update contestant",QString("Unable to save contestant 1. Error: %1").arg(errStr));
+        db.rollback();
+        return;
+    }
+    int ii;
+    for (ii=1; ii < 6; ++ii)
+    {
+        if (playerId[ii] != -1 && playerName[ii]->text().isEmpty() && playerCharacter[ii]->text().isEmpty())
+        {
+            // delete player ii+1
+            if (!deletePerformer(playerId[ii],2))
+            {
+                db.rollback();
+                return;
+            }
+        } else if (playerId[ii] == -1 && (!playerName[ii]->text().isEmpty() || !playerCharacter[ii]->text().isEmpty()))
+        {
+            // add player ii+1
+            if (!addPlayer(playerName[ii]->text(),playerCharacter[ii]->text(),playerOrigin[ii]->text(),playerDescription[ii]->text(),playerPrereg[ii]->text(),2,errStr))
+            {
+                QMessageBox::critical(this,"Unable to add contestant",QString("Unable to save contestant %1. Error: %2").arg(ii+1).arg(errStr));
+                db.rollback();
+                return;
+            }
+        } else if (playerId[ii] != -1)
+        {
+            // update player ii+1
+            if (!updatePlayer(playerName[ii]->text(),playerCharacter[ii]->text(),playerOrigin[ii]->text(),playerDescription[ii]->text(),playerPrereg[ii]->text(),playerId[ii],errStr))
+            {
+                QMessageBox::critical(this,"Unable to update contestant",QString("Unable to save contestant %1. Error: %2").arg(ii+1).arg(errStr));
+                db.rollback();
+                return;
+            }
+        }
+    }
+    /*--if (!updatePlayer(player1Name->text(),player1Character->text(),player1Origin->text(),player1Description->text(),player1Prereg->text(),player1id,errStr))
     {
         QMessageBox::critical(this,"Unable to update contestant",QString("Unable to save contestant 1. Error: %1").arg(errStr));
         db.rollback();
@@ -968,7 +1119,7 @@ DialogModEntry::updateEntry()
             db.rollback();
             return;
         }
-    }
+    }--*/
     // now update all other fields
     QString updateStringFields, updateStringValues;
     //updateStringFields = "group_name, confirmed, origin, category_id, contact_email, craft_judged, notes_entry, notes_announcer, notes_sound, description, skit_name";
@@ -982,6 +1133,8 @@ DialogModEntry::updateEntry()
         addUpdateField(updateStringFields, updateStringValues, "contact_email", groupEMail->text());
     if (scriptUrlChanged)
         addUpdateField(updateStringFields, updateStringValues, "script_url", scriptUrl->text());
+    if (musicUrlChanged)
+        addUpdateField(updateStringFields, updateStringValues, "music_url", musicUrl->text());
 
     if (confirmedChanged)
     {
@@ -1016,6 +1169,8 @@ DialogModEntry::updateEntry()
             catID=3;
         else if (catMaster->isChecked())
             catID=4;
+        else if (catChildren->isChecked())
+            catID=6;
         addUpdateField(updateStringFields, updateStringValues, "category_id", QString("%1").arg(catID));
     }
     if (entryCommentsChanged)
@@ -1239,6 +1394,8 @@ DialogModEntry::handleTextChanged(const QString&)
         groupEMailChanged = true;
     else if (sender() == scriptUrl)
         scriptUrlChanged = true;
+    else if (sender() == musicUrl)
+        musicUrlChanged = true;
 }
 
 void

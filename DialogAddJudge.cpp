@@ -31,6 +31,26 @@ DialogAddJudge::~DialogAddJudge()
 }
 
 void
+DialogAddJudge::loadSettings()
+{
+    QSettings settings;
+    settings.beginGroup("AddJudgeDialog");
+    resize(settings.value("size",QSize(520,671)).toSize());
+    move(settings.value("pos",QPoint(200,200)).toPoint());
+    settings.endGroup();
+}
+
+void
+DialogAddJudge::saveSettings()
+{
+    QSettings settings;
+    settings.beginGroup("AddJudgeDialog");
+    settings.setValue("size",size());
+    settings.setValue("pos",pos());
+    settings.endGroup();
+}
+
+void
 DialogAddJudge::accept()
 {
     if (addJudge())

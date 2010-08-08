@@ -12,7 +12,9 @@ HEADERS = DialogAccess.h   \
 	  DialogModEntry.h \
 	  DBUtility.h      \
 	  DescriptionUtil.h \
-	  DialogAddJudge.h
+	  DialogAddJudge.h \
+	  DialogDeleteJudge.h \
+	  DialogGuestJudgeForm.h
 SOURCES = main.cpp           \
           DialogAccess.cpp   \
 	  MasterMain.cpp     \
@@ -20,6 +22,8 @@ SOURCES = main.cpp           \
 	  DialogNewEntry.cpp \
 	  DialogModEntry.cpp \
 	  DescriptionUtil.cpp \
-	  DialogAddJudge.cpp
+	  DialogAddJudge.cpp \
+	  DialogDeleteJudge.cpp \
+	  DialogGuestJudgeForm.cpp
 
 RESOURCES = ndk_costume_contest.qrc

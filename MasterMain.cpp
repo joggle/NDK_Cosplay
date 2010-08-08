@@ -5,6 +5,7 @@
 #include "DialogNewEntry.h"
 #include "DialogModEntry.h"
 #include "DialogAddJudge.h"
+#include "DialogGuestJudgeForm.h"
 
 MasterMain::MasterMain(QWidget* parent)
           : QMainWindow(parent)
@@ -138,6 +139,7 @@ MasterMain::logout()
 void
 MasterMain::newEntry()
 {
+    dlgNewEntry->clearDataFields();
 	dlgNewEntry->show();
 }
 
@@ -193,6 +195,9 @@ MasterMain::showSoundForm()
 void
 MasterMain::showGuestJudgeForm()
 {
+    DialogGuestJudgeForm* dlg = new DialogGuestJudgeForm(this);
+    dlg->exec();
+    delete dlg;
 }
 
 void
