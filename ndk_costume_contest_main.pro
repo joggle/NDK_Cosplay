@@ -10,6 +10,7 @@ HEADERS = DialogAccess.h   \
 	  MasterStatus.h   \
 	  DialogNewEntry.h \
 	  DialogModEntry.h \
+	  DialogDeleteEntry.h \
 	  DBUtility.h      \
 	  DescriptionUtil.h \
 	  DialogAddJudge.h \
@@ -21,6 +22,7 @@ SOURCES = main.cpp           \
 	  MasterStatus.cpp   \
 	  DialogNewEntry.cpp \
 	  DialogModEntry.cpp \
+	  DialogDeleteEntry.cpp \
 	  DescriptionUtil.cpp \
 	  DialogAddJudge.cpp \
 	  DialogDeleteJudge.cpp \

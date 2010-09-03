@@ -4,6 +4,7 @@
 #include "MasterStatus.h"
 #include "DialogNewEntry.h"
 #include "DialogModEntry.h"
+#include "DialogDeleteEntry.h"
 #include "DialogAddJudge.h"
 #include "DialogGuestJudgeForm.h"
 
@@ -20,6 +21,7 @@ MasterMain::MasterMain(QWidget* parent)
 
     dlgNewEntry = new DialogNewEntry(this);
     dlgModEntry = new DialogModEntry(this);
+    dlgDeleteEntry = new DialogDeleteEntry(this);
     connect(dlgNewEntry,SIGNAL(accepted()),this,SLOT(handleNewEntry()));
     connect(dlgNewEntry,SIGNAL(accepted()),dlgModEntry,SLOT(refresh()));
 }
@@ -152,6 +154,7 @@ MasterMain::modEntry()
 void
 MasterMain::deleteEntry()
 {
+	dlgDeleteEntry->show();
 }
 
 void

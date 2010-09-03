@@ -10,6 +10,7 @@ class QToolBar;
 
 class DialogNewEntry;
 class DialogModEntry;
+class DialogDeleteEntry;
 
 class MasterMain : public QMainWindow
 {
@@ -70,6 +71,7 @@ private:
     // dialogs
     DialogNewEntry* dlgNewEntry;
     DialogModEntry* dlgModEntry;
+    DialogDeleteEntry* dlgDeleteEntry;
 };
 
 #endif // NDK_COSTUME_CONTEST_MASTERMAIN_H
